@@ -1,5 +1,5 @@
 "use client";
-import { Button, Input } from "@mantine/core";
+import { Button, Input, PasswordInput, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -7,7 +7,7 @@ import { adminLogin } from "@/lib/api/auth";
 import { notifications } from "@mantine/notifications";
 
 function AdminLoginPage() {
-  const router = useRouter(); 
+  const router = useRouter();
   const form = useForm({
     initialValues: {
       email: "",
@@ -23,7 +23,7 @@ function AdminLoginPage() {
         message: "Logged in successfully",
         color: "green",
       });
-      router.push("/admin/dashboard");
+       router.push("/admin/dashboard");
     },
     onError: (error: Error) => {
       notifications.show({
@@ -41,14 +41,23 @@ function AdminLoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="p-8 rounded  max-w-md w-full">
-        <h1>Admin Login</h1>
+        <h1 className="text-base font-medium mb-3">Admin Login</h1>
         <form className="space-y-4" onSubmit={form.onSubmit(onSubmit)}>
-          <Input placeholder="Email" {...form.getInputProps("email")} />
-          <Input
-            placeholder="Password"
-            type="password"
-            {...form.getInputProps("password")}
-          />
+          <div>
+            <TextInput
+              withAsterisk
+              label="Email"
+              placeholder="Email"
+              {...form.getInputProps("email")}
+            />
+          </div>
+          <div>
+            <PasswordInput
+              placeholder="Password"
+              label="Password"
+              {...form.getInputProps("password")}
+            />
+          </div>
           <Button type="submit" loading={isPending}>
             Login
           </Button>
