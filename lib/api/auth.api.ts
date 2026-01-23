@@ -20,8 +20,13 @@ async function getMe(): Promise<IUser> {
     return data;
 }
 
+async function logOut() {
+    const { data } = await api.post("/api/v1/auth/logout");
+    return data;
+}
 
 export {
     adminLogin,
     getMe,
+    logOut
 }
