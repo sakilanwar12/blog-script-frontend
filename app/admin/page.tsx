@@ -1,10 +1,10 @@
 "use client";
-import { Button, Input, PasswordInput, TextInput } from "@mantine/core";
+import { Button, PasswordInput, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { adminLogin } from "@/lib/api/auth";
 import { notifications } from "@mantine/notifications";
+import { adminLogin } from "@/lib/api/auth.api";
 
 function AdminLoginPage() {
   const router = useRouter();

@@ -1,59 +1,27 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { getMe } from "@/lib/api/auth";
-
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  role?: string;
-  [key: string]: any;
-}
+import { getMe, IUser } from "@/lib/api/auth.api";
+import QUERY_KEYS from "@/lib/api/query-keys";
+import { useQuery } from "@tanstack/react-query";
+import React, { createContext, useContext } from "react";
 
 interface AuthContextType {
-  user: User | null;
+  user: IUser | null;
   isLoading: boolean;
-  error: string | null;
-  logout: () => void;
+  error: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  
+const  {data,isLoading,isError} = useQuery({ queryKey: QUERY_KEYS.AUTH.ME, queryFn: getMe });
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        const userData = await getMe();
-        setUser(userData.data || userData);
-      } catch (err) {
-        setUser(null);
-        setError(err instanceof Error ? err.message : "Failed to fetch user");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
-  const logout = () => {
-    setUser(null);
-    setError(null);
-  };
-
-  const value: AuthContextType = {
-    user,
-    isLoading,
-    error,
-    logout,
-  };
+const value: AuthContextType = {
+ user: data || null,
+ isLoading,
+ error: isError,
+};
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
