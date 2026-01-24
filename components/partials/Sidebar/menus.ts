@@ -9,6 +9,7 @@ import {
 
 export const navItems = [
     { icon: Home, label: "Dashboard", href: "/admin", badge: null },
+    { icon: Home, label: "Posts", href: "/admin", badge: null },
     { icon: Users, label: "Users", href: "/admin/users", badge: "12" },
     { icon: Package, label: "Products", href: "/admin/products", badge: null },
     {

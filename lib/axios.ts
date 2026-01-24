@@ -41,8 +41,9 @@ api.interceptors.response.use(
         processQueue();
         return api(original);
       } catch (err) {
+        console.log(err)
         processQueue(err);
-        window.location.href = "/login";
+        window.location.href = "/admin-login";
         return Promise.reject(err);
       } finally {
         isRefreshing = false;
