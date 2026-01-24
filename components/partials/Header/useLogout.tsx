@@ -1,18 +1,14 @@
-"use client";
-
-import { logOut } from "@/lib/api/auth.api";
-import { Button } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
+import { logOut } from "@/lib/api/auth.api";
 
-function Logout() {
+export function useLogout() {
   const router = useRouter();
 
-  const { mutate: handleLogout, isPending } = useMutation({
+  const mutation = useMutation({
     mutationFn: logOut,
     onSuccess: (data) => {
-      // Show success notification
       notifications.show({
         title: "Success",
         message: data?.message || "Logout successful",
@@ -21,10 +17,7 @@ function Logout() {
 
       router.refresh();
     },
-    onError: (error) => {
-      console.error(error);
-
-      // Show error notification
+    onError: () => {
       notifications.show({
         title: "Error",
         message: "Logout failed. Please try again.",
@@ -35,16 +28,5 @@ function Logout() {
     },
   });
 
-  return (
-    <Button
-      onClick={() => handleLogout()}
-      loading={isPending}
-      color="red"
-      variant="outline"
-    >
-      Logout
-    </Button>
-  );
+  return mutation;
 }
-
-export default Logout;
