@@ -1,5 +1,11 @@
+import PostViewTable from "./PostViewTable";
+
 function PostViewPage() {
-  return <div>PostViewPage</div>;
+  return (
+    <div>
+      <PostViewTable />
+    </div>
+  );
 }
 
 export default PostViewPage;
