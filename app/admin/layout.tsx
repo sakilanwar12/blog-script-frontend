@@ -1,11 +1,12 @@
+import AdminLayout from "@/components/partials/AdminLayout";
 import QueryProvider from "@/providers/QueryProvider";
 
-function AdminLayout({ children }: { children: React.ReactNode }) {
-    return (
-        <QueryProvider>
-            {children}
-        </QueryProvider>
-    );
+function AdminRootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <QueryProvider>
+      <AdminLayout>{children}</AdminLayout>
+    </QueryProvider>
+  );
 }
 
-export default AdminLayout;
+export default AdminRootLayout;
