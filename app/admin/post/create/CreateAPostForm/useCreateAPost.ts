@@ -1,6 +1,6 @@
 import { useForm } from "@mantine/form"
 import { initialCreatePostValues } from "./initialFormValues"
-import { createAPost, ICreateAPostArgs } from "@/lib/api/post.api"
+import { createAPost, TCreateAPostArgs } from "@/lib/api/post.api"
 import { createPostValidators } from "./validator"
 import { useMutation } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
@@ -8,7 +8,7 @@ import { notifications } from "@mantine/notifications"
 
 const useCreateAPost = () => {
     const router = useRouter();
-    const formProps = useForm<ICreateAPostArgs>({
+    const formProps = useForm<TCreateAPostArgs>({
         initialValues: initialCreatePostValues,
         validate: createPostValidators
     })
@@ -31,7 +31,7 @@ const useCreateAPost = () => {
         },
     });
 
-    const handleSubmit = (values: ICreateAPostArgs) => {
+    const handleSubmit = (values: TCreateAPostArgs) => {
         mutate(values)
     }
     return {

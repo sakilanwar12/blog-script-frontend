@@ -1,23 +1,25 @@
-import {
-    Home,
-    Users,
-    Settings,
-    BarChart3,
-    Package,
-    FileText,
-} from "lucide-react";
-
-export const navItems = [
-    { icon: Home, label: "Dashboard", href: "/admin", badge: null },
-    { icon: Home, label: "Posts", href: "/admin", badge: null },
-    { icon: Users, label: "Users", href: "/admin/users", badge: "12" },
-    { icon: Package, label: "Products", href: "/admin/products", badge: null },
+import { Home, FileText } from "lucide-react";
+interface IMenuItem {
+    icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+    label: string;
+    href: string;
+    children?: IMenuItem[];
+}
+export const navItems: IMenuItem[] = [
+    { icon: Home, label: "Dashboard", href: "/admin" },
     {
-        icon: BarChart3,
-        label: "Analytics",
-        href: "/admin/analytics",
-        badge: null,
+        icon: FileText,
+        label: "Posts",
+        href: "/admin/post",
+        children: [
+            {
+                label: "Create",
+                href: "/admin/post/create",
+            },
+            {
+                label: "Posts",
+                href: "/admin/post/view",
+            },
+        ],
     },
-    { icon: FileText, label: "Reports", href: "/admin/reports", badge: "3" },
-    { icon: Settings, label: "Settings", href: "/admin/settings", badge: null },
 ];
