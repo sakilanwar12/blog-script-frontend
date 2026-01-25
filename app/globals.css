@@ -2,11 +2,13 @@
 
 :root {
   --background: #ffffff;
+  --card: #F1F5F9;
   --foreground: #171717;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-card: var(--card);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);

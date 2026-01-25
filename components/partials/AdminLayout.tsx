@@ -1,12 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  AppShell,
-  Text,
-  Box,
-  MantineProvider,
-} from "@mantine/core";
+import { AppShell, Text, Box, MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 
 import Sidebar from "./Sidebar";
@@ -34,31 +29,13 @@ export default function AdminLayout({
           <Header opened={opened} setOpened={setOpened} />
         </AppShell.Header>
 
-        <AppShell.Navbar p="md">
-          <AppShell.Section grow>
-            <Sidebar setOpened={setOpened} />
-          </AppShell.Section>
-
-          <AppShell.Section>
-            <Box
-              style={{
-                padding: 16,
-                background: "linear-gradient(135deg, #3b82f6, #9333ea)",
-                borderRadius: 8,
-                color: "white",
-              }}
-            >
-              <Text size="sm" fw={600} mb="xs">
-                Need Help?
-              </Text>
-              <Text size="xs" style={{ opacity: 0.9 }}>
-                Check our documentation
-              </Text>
-            </Box>
-          </AppShell.Section>
+        <AppShell.Navbar p="md" style={{ border: 0 }}>
+          <Sidebar setOpened={setOpened} />
         </AppShell.Navbar>
 
-        <AppShell.Main>{children}</AppShell.Main>
+        <AppShell.Main>
+          <div className="p-5">{children}</div>
+        </AppShell.Main>
       </AppShell>
     </MantineProvider>
   );
