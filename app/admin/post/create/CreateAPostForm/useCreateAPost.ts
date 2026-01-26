@@ -5,8 +5,11 @@ import { createPostValidators } from "./validator"
 import { useMutation } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { notifications } from "@mantine/notifications"
+import { useState } from "react"
 
 const useCreateAPost = () => {
+    const [content, setContent] = useState("");
+
     const router = useRouter();
     const formProps = useForm<TCreateAPostArgs>({
         initialValues: initialCreatePostValues,
@@ -20,7 +23,7 @@ const useCreateAPost = () => {
                 message: "Post Created successfully",
                 color: "green",
             });
-             router.push("/admin/post/view");
+            router.push("/admin/post/view");
         },
         onError: (error: Error) => {
             notifications.show({
@@ -32,12 +35,22 @@ const useCreateAPost = () => {
     });
 
     const handleSubmit = (values: TCreateAPostArgs) => {
-        mutate(values)
+        console.log("values",values)
+        mutate({
+            title: values?.title,
+            status: values?.status,
+            excerpt: values?.excerpt,
+            content
+        })
     }
     return {
         formProps,
         handleSubmit,
-        isPending
+        isPending,
+        postContent: {
+            content,
+            setContent
+        }
     }
 }
 

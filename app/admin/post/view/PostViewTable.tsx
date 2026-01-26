@@ -1,64 +1,106 @@
 "use client";
-import { getPost } from "@/lib/api/post.api";
+import { DefaultTable } from "@/components/DefaultTable";
+import RenderData from "@/components/RenderData";
+import { getPost, TPost } from "@/lib/api/post.api";
 import QUERY_KEYS from "@/lib/api/query-keys";
-import { ActionIcon, Checkbox, Table } from "@mantine/core";
+import { ActionIcon, Checkbox } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
+import { ColumnDef } from "@tanstack/react-table";
 import { SquarePen, Trash2 } from "lucide-react";
 
+const columns: ColumnDef<TPost>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={table.getIsAllRowsSelected()}
+        indeterminate={table.getIsSomeRowsSelected()}
+        onChange={table.getToggleAllRowsSelectedHandler()}
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        disabled={!row.getCanSelect()}
+        onChange={row.getToggleSelectedHandler()}
+      />
+    ),
+    size: 40,
+  },
+  {
+    accessorKey: "title",
+    header: "Title",
+    cell: (info) => <p>{info.getValue() as string}</p>,
+  },
+  {
+    accessorKey: "excerpt",
+    header: "Excerpt",
+    cell: (info) => info.getValue(),
+  },
+  {
+    id: "author",
+    header: "Author",
+    cell: (row) => <span>Author</span>,
+  },
+  {
+    id: "category",
+    header: "Excerpt",
+    cell: () => "Blog",
+  },
+  {
+    id: "date",
+    header: "Date",
+    cell: () => "last modified",
+  },
+  {
+    id: "actions",
+    header: "Action",
+    cell: ({ row }) => (
+      <div style={{ textAlign: "right" }}>
+        <ActionIcon
+          variant="transparent"
+          size="sm"
+          className="mr-3"
+          onClick={() => console.log("Edit", row.original.id)}
+        >
+          <SquarePen className="size-6" />
+        </ActionIcon>
+        <ActionIcon
+          variant="transparent"
+          size="sm"
+          onClick={() => console.log("Delete", row.original.id)}
+        >
+          <Trash2 className="size-6 text-red-500" />
+        </ActionIcon>
+      </div>
+    ),
+  },
+];
+
 function PostViewTable() {
-  const {
-    data: getPostRes,
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
+  const { data: getPostRes, ...getPostApiState } = useQuery({
     queryKey: QUERY_KEYS.POST.GET_POSTS,
     queryFn: getPost,
     retry: false,
   });
 
-  const getPostData = getPostRes?.data;
+  const getPostData = getPostRes?.data || [];
+
+  const handleRowSelection = (selectedRows: TPost[]) => {
+    console.log("Selected posts:", selectedRows);
+  };
 
   return (
-    <Table>
-      <Table.Thead>
-        <Table.Tr>
-          <Table.Th style={{ width: "20px", paddingRight: "10px" }}>
-            <Checkbox />
-          </Table.Th>
-          <Table.Th style={{ paddingLeft: "0px" }}>Title</Table.Th>
-          <Table.Th>Author</Table.Th>
-          <Table.Th>Categories</Table.Th>
-          <Table.Th>Content</Table.Th>
-          <Table.Th>Date</Table.Th>
-          <Table.Th style={{ textAlign: "right" }}>Action</Table.Th>
-        </Table.Tr>
-      </Table.Thead>
-      <Table.Tbody>
-        {getPostData?.map((post) => (
-          <Table.Tr key={post.id}>
-            <Table.Td>
-              <Checkbox />
-            </Table.Td>
-            <Table.Td style={{ paddingLeft: "0px" }}>
-              <p>{post?.title}</p>
-            </Table.Td>
-            <Table.Td>{post.content}</Table.Td>
-            <Table.Td>Sakil Anwar</Table.Td>
-            <Table.Td>Blog</Table.Td>
-            <Table.Td>last modified</Table.Td>
-            <Table.Td style={{ textAlign: "right" }}>
-              <ActionIcon variant="transparent" size="sm" className="mr-3">
-                <SquarePen className="size-6" />
-              </ActionIcon>
-              <ActionIcon variant="transparent" size="sm">
-                <Trash2 className="size-6 text-red-500" />
-              </ActionIcon>
-            </Table.Td>
-          </Table.Tr>
-        ))}
-      </Table.Tbody>
-    </Table>
+    <RenderData {...getPostApiState}>
+      <DefaultTable
+        data={getPostData}
+        columns={columns}
+        enableSorting={true}
+        enablePagination={true}
+        enableRowSelection={true}
+        onRowSelectionChange={handleRowSelection}
+      />
+    </RenderData>
   );
 }
 

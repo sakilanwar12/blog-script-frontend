@@ -1,7 +1,8 @@
-import { ICreateAPostArgs } from "@/lib/api/post.api";
+import { TCreateAPostArgs } from "@/lib/api/post.api";
 
-export const initialCreatePostValues: ICreateAPostArgs = {
+export const initialCreatePostValues: TCreateAPostArgs = {
     title: "",
+    excerpt:"",
     content: "",
     status: "draft"
 }

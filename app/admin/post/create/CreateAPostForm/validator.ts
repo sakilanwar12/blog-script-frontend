@@ -1,18 +1,19 @@
 import { FormValidators } from "@/lib/api/common-api.types"
-import { ICreateAPostArgs } from "@/lib/api/post.api"
+import { TCreateAPostArgs } from "@/lib/api/post.api"
 
-export const createPostValidators: FormValidators<ICreateAPostArgs> = {
+export const createPostValidators: FormValidators<TCreateAPostArgs> = {
     title: (value) => {
         if (!value?.trim()) {
             return "Title is required"
         }
 
-        return null
+        return null;
     },
-    content: (value) => {
+    excerpt: (value) => {
         if (!value?.trim()) {
-            return "Content is required"
+            return "Excerpt is required"
         }
-        return null
+
+        return null;
     },
 }

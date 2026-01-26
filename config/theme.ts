@@ -39,12 +39,12 @@ export const theme = createTheme({
       styles: {
         main: {
           backgroundColor: '#f8f9fa', // main content bg
-          border: 0,
+          border: '1px solid #e9ecef',
           shadow: 'none',
         },
         header: {
           backgroundColor: '#fff', // header bg
-          border: 0,
+          borderBottom: '1px solid #e9ecef',
         },
       },
     },
@@ -53,7 +53,7 @@ export const theme = createTheme({
       styles: {
         root: {
           backgroundColor: '#f1f3f5', // sidebar
-          border: 0,
+          borderRight: '1px solid #e9ecef',
         },
       },
     },
@@ -62,7 +62,7 @@ export const theme = createTheme({
       styles: {
         root: {
           backgroundColor: '#ffffff',
-          border: 0,
+          border: '1px solid #e9ecef',
         },
       },
     },
@@ -77,7 +77,7 @@ export const theme = createTheme({
       styles: {
         input: {
           backgroundColor: '#ffffff',
-          border: 0,
+          border: '1px solid #e9ecef',
         },
       },
     },
@@ -89,6 +89,7 @@ export const theme = createTheme({
           borderRadius: 10,
           overflow: 'hidden',
           backgroundColor: '#ffffff', // card-like table bg
+          border: '1px solid #e9ecef',
         },
         th: {
           backgroundColor: '#f1f3f5', // header soft gray
@@ -111,4 +112,3 @@ export const theme = createTheme({
     },
   },
 });
-

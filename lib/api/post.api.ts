@@ -17,6 +17,7 @@ Create A Post Start
 export type TCreateAPostArgs = {
     title: string;
     content: string;
+    excerpt:string;
     status?: TBlogStatus;
 }
 type ICreateAPostRes = TCreateAPostArgs & {
