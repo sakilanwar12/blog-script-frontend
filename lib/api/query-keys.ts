@@ -1,9 +1,11 @@
- const QUERY_KEYS = {
+import { TPostArgs } from './post.api';
+
+const QUERY_KEYS = {
   AUTH: {
     ME: ["me"],
   },
   POST:{
-    GET_POSTS: ["posts"],
+    GET_POSTS: (args?: TPostArgs) => ["posts", args] as const,
     GET_POST: ["post"],
   }
 

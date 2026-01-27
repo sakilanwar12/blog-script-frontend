@@ -3,12 +3,13 @@ import DynamicPagination from "@/components/DynamicPagination";
 import { DefaultTable } from "@/components/DefaultTable";
 import RenderData from "@/components/RenderData";
 import useManageSearchParams from "@/hooks/useManageSearchParams";
-import { getPost, TPost } from "@/lib/api/post.api";
+import { getPost, TPost, TPostArgs } from "@/lib/api/post.api";
 import QUERY_KEYS from "@/lib/api/query-keys";
 import { ActionIcon, Checkbox } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import { SquarePen, Trash2 } from "lucide-react";
+import { useMemo } from "react";
 
 const columns: ColumnDef<TPost>[] = [
   {
@@ -80,14 +81,25 @@ const columns: ColumnDef<TPost>[] = [
 ];
 
 function PostViewTable() {
-  const { getParams } = useManageSearchParams<{
-    search: string;
-    limit: string;
-  }>();
-  console.log(getParams());
+  const { getParams } = useManageSearchParams<TPostArgs>();
+  const page = getParams("page") || "1";
+  const limit = getParams("limit") || "10";
+  const search = getParams("search") || "";
+  const status = getParams("status") || "";
+
+  // Build query args
+  const queryArgs: any = useMemo(
+    () => ({
+      page,
+      limit,
+      ...(search && { search }),
+      ...(status && { status }),
+    }),
+    [page, limit, search, status],
+  );
   const { data: getPostRes, ...getPostApiState } = useQuery({
-    queryKey: QUERY_KEYS.POST.GET_POSTS,
-    queryFn: getPost,
+    queryKey: QUERY_KEYS.POST.GET_POSTS(queryArgs),
+    queryFn: () => getPost(queryArgs),
     retry: false,
   });
 

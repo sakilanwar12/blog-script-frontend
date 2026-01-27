@@ -1,4 +1,5 @@
-import { TApiResponse, TString } from './common-api.types';
+import { generateQueryString } from '../query-string';
+import { TApiResponse, TMeta, TString } from './common-api.types';
 import api from "@/lib/axios";
 
 
@@ -17,7 +18,7 @@ Create A Post Start
 export type TCreateAPostArgs = {
     title: string;
     content: string;
-    excerpt:string;
+    excerpt: string;
     status?: TBlogStatus;
 }
 type ICreateAPostRes = TCreateAPostArgs & {
@@ -44,8 +45,12 @@ export type TPost = ICreateAPostRes & {
     createdAt: TString;
     updatedAt: TString;
 }
-async function getPost(): Promise<TApiResponse<TPost[]>> {
-    const { data } = await api.get("/api/v1/blog");
+export type TPostArgs = TMeta & {
+    search?: string; status?: string
+};
+async function getPost(args?: TPostArgs): Promise<TApiResponse<TPost[]>> {
+    const queryString = generateQueryString(args);
+    const { data } = await api.get(`/api/v1/blog${queryString}`);
     return data;
 }
 

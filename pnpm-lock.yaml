@@ -56,6 +56,9 @@ importers:
       dayjs:
         specifier: ^1.11.19
         version: 1.11.19
+      js-utility-method:
+        specifier: ^2.0.4
+        version: 2.0.4
       jsonwebtoken:
         specifier: ^9.0.3
         version: 9.0.3
@@ -1725,6 +1728,9 @@ packages:
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
+
+  js-utility-method@2.0.4:
+    resolution: {integrity: sha512-y9nNv+0ITpIRL3a/OwGvYD2Qi5qjDTxGi0IQJFNGHC74gjXNr2070Ba9qApUflV+A/QcLm2MhLW8ot9cObzPqw==}
 
   js-yaml@4.1.1:
     resolution: {integrity: sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==}
@@ -4348,6 +4354,8 @@ snapshots:
   jiti@2.6.1: {}
 
   js-tokens@4.0.0: {}
+
+  js-utility-method@2.0.4: {}
 
   js-yaml@4.1.1:
     dependencies:

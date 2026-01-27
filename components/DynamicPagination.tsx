@@ -1,10 +1,10 @@
 "use client";
 
 import { Pagination } from "@mantine/core";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import useManageSearchParams from "@/hooks/useManageSearchParams";
 import { TMeta } from "@/lib/api/common-api.types";
-
+import { convertToNumber } from "js-utility-method";
 type PaginationSearchParams = {
   page: string;
   limit: string;
@@ -15,9 +15,6 @@ type DynamicPaginationProps = {
   onPageChange?: (page: number) => void;
   siblingCount?: number;
   showControls?: boolean;
-  limitOptions?: number[];
-  showInfo?: boolean;
-  debounceMs?: number;
   disabled?: boolean;
 };
 
@@ -26,48 +23,25 @@ function DynamicPagination({
   onPageChange,
   siblingCount = 1,
   showControls = true,
-  debounceMs = 300,
   disabled = false,
 }: DynamicPaginationProps) {
   const { getParams, updateParams } =
     useManageSearchParams<PaginationSearchParams>();
 
-  // Parse meta values safely
-  const apiPage = useMemo(
-    () =>
-      typeof meta.page === "number" ? meta.page : parseInt(String(meta.page)),
-    [meta.page],
-  );
+  const apiPage = convertToNumber({ value: meta.page, fallback: 1 });
+  const apiLimit = convertToNumber({ value: meta.limit, fallback: 10 });
+  const apiTotalPages = convertToNumber({
+    value: meta.totalPages,
+    fallback: 1,
+  });
 
-  const apiLimit = useMemo(
-    () =>
-      typeof meta.limit === "number"
-        ? meta.limit
-        : parseInt(String(meta.limit)),
-    [meta.limit],
-  );
-
-  const apiTotalPages = useMemo(
-    () =>
-      typeof meta.totalPages === "number"
-        ? meta.totalPages
-        : parseInt(String(meta.totalPages)),
-    [meta.totalPages],
-  );
-
-  // Get current values from URL or fallback to API values
+  // Read params
   const pageParam = getParams("page");
   const limitParam = getParams("limit");
 
-  const currentPage = useMemo(
-    () => (pageParam ? parseInt(pageParam) : apiPage),
-    [pageParam, apiPage],
-  );
-
-  const currentLimit = useMemo(
-    () => (limitParam ? parseInt(limitParam) : apiLimit),
-    [limitParam, apiLimit],
-  );
+  // Resolve current state
+  const currentPage = convertToNumber({ value: pageParam, fallback: apiPage });
+  const currentLimit =  convertToNumber({ value: limitParam, fallback: apiLimit });
 
   // Initialize URL params if they don't exist
   useEffect(() => {
@@ -84,13 +58,14 @@ function DynamicPagination({
 
   // Handle page change
   const handlePageChange = (newPage: number) => {
-    if (disabled || newPage === currentPage) return;
+    if (disabled || newPage === currentPage) {
+      return;
+    }
 
     updateParams(
       { page: String(newPage) },
       {
         replace: true,
-        debounceMs,
       },
     );
 
