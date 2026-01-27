@@ -4,7 +4,7 @@ export type TNumber = number | TNullish;
 export type TBoolean = boolean | TNullish;
 
 
-type TMeta = {
+export type TMeta = {
     page: number;
     limit: number;
     total: number;
@@ -12,6 +12,8 @@ type TMeta = {
     hasNext: boolean;
     hasPrev: boolean;
 };
+
+
 
 export type TApiResponse<T> = {
     success: boolean;

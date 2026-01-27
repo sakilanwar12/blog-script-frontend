@@ -1,6 +1,8 @@
 "use client";
+import DynamicPagination from "@/components/DynamicPagination";
 import { DefaultTable } from "@/components/DefaultTable";
 import RenderData from "@/components/RenderData";
+import useManageSearchParams from "@/hooks/useManageSearchParams";
 import { getPost, TPost } from "@/lib/api/post.api";
 import QUERY_KEYS from "@/lib/api/query-keys";
 import { ActionIcon, Checkbox } from "@mantine/core";
@@ -78,6 +80,11 @@ const columns: ColumnDef<TPost>[] = [
 ];
 
 function PostViewTable() {
+  const { getParams } = useManageSearchParams<{
+    search: string;
+    limit: string;
+  }>();
+  console.log(getParams());
   const { data: getPostRes, ...getPostApiState } = useQuery({
     queryKey: QUERY_KEYS.POST.GET_POSTS,
     queryFn: getPost,
@@ -100,6 +107,7 @@ function PostViewTable() {
         enableRowSelection={true}
         onRowSelectionChange={handleRowSelection}
       />
+      <DynamicPagination meta={getPostRes?.meta} />
     </RenderData>
   );
 }
