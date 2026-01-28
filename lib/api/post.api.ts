@@ -22,7 +22,7 @@ export type TCreateAPostArgs = {
     status?: TBlogStatus;
 }
 type ICreateAPostRes = TCreateAPostArgs & {
-    id: string;
+    _id: string;
 }
 async function createAPost(payload: TCreateAPostArgs): Promise<TApiResponse<ICreateAPostRes>> {
     const { data } = await api.post("/api/v1/blog", payload);
@@ -34,7 +34,7 @@ async function createAPost(payload: TCreateAPostArgs): Promise<TApiResponse<ICre
 Create A Post End
 =====================================================================
 */
-
+/* ============================================================================================*/
 /*
 =====================================================================
 Get A Post Start
@@ -59,8 +59,29 @@ async function getPost(args?: TPostArgs): Promise<TApiResponse<TPost[]>> {
 Get A Post End
 =====================================================================
 */
+/* ============================================================================================*/
+/*
+=====================================================================
+Delete A Post Start
+=====================================================================
+*/
 
+export type TDeleteAPostArg = {
+    id: string
+}
+async function deleteAPost({ id }: TDeleteAPostArg): Promise<TApiResponse<TPost>> {
+
+    const { data } = await api.delete(`/api/v1/blog/${id}`);
+    return data;
+}
+
+/*
+=====================================================================
+Delete A Post End
+=====================================================================
+*/
 export {
     createAPost,
-    getPost
+    getPost,
+    deleteAPost
 }

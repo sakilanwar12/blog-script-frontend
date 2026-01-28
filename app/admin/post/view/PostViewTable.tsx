@@ -3,14 +3,61 @@ import DynamicPagination from "@/components/DynamicPagination";
 import { DefaultTable } from "@/components/DefaultTable";
 import RenderData from "@/components/RenderData";
 import useManageSearchParams from "@/hooks/useManageSearchParams";
-import { getPost, TPost, TPostArgs } from "@/lib/api/post.api";
-import QUERY_KEYS from "@/lib/api/query-keys";
+import {  TPost, TPostArgs } from "@/lib/api/post.api";
 import { ActionIcon, Checkbox } from "@mantine/core";
-import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import { SquarePen, Trash2 } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { ActionCellProps } from "@/lib/api/common-api.types";
+import DeleteConfirmationDialog from "@/components/DeleteConfirmationModal";
+import { useDeleteAPost } from "@/hooks/post/useDeletePost";
+import { useGetPosts } from "@/hooks/post/useGetPosts";
 
+function ActionCell({ row }: ActionCellProps<TPost>) {
+  const [isConfirmed, setIsConfirmed] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const deletePostMutation = useDeleteAPost({
+    onSuccess: () => {
+      setIsConfirmed(false);
+      setSelectedId(null);
+    },
+  });
+
+  const handleDelete = () => {
+    if (!isConfirmed || !selectedId) {
+      return;
+    }
+    deletePostMutation.mutate(selectedId!);
+  };
+  return (
+    <div style={{ textAlign: "right" }}>
+      <ActionIcon
+        variant="transparent"
+        size="sm"
+        className="mr-3"
+        onClick={() => console.log("Edit", row.original._id)}
+      >
+        <SquarePen className="size-6" />
+      </ActionIcon>
+      <ActionIcon
+        variant="transparent"
+        size="sm"
+        onClick={() => {
+          setIsConfirmed(true);
+          setSelectedId(row.original._id);
+        }}
+      >
+        <Trash2 className="size-6 text-red-500" />
+      </ActionIcon>
+      <DeleteConfirmationDialog
+        opened={isConfirmed}
+        onClose={() => setIsConfirmed(false)}
+        onConfirm={handleDelete}
+      />
+    </div>
+  );
+}
 const columns: ColumnDef<TPost>[] = [
   {
     id: "select",
@@ -58,25 +105,7 @@ const columns: ColumnDef<TPost>[] = [
   {
     id: "actions",
     header: "Action",
-    cell: ({ row }) => (
-      <div style={{ textAlign: "right" }}>
-        <ActionIcon
-          variant="transparent"
-          size="sm"
-          className="mr-3"
-          onClick={() => console.log("Edit", row.original.id)}
-        >
-          <SquarePen className="size-6" />
-        </ActionIcon>
-        <ActionIcon
-          variant="transparent"
-          size="sm"
-          onClick={() => console.log("Delete", row.original.id)}
-        >
-          <Trash2 className="size-6 text-red-500" />
-        </ActionIcon>
-      </div>
-    ),
+    cell: ActionCell,
   },
 ];
 
@@ -97,13 +126,8 @@ function PostViewTable() {
     }),
     [page, limit, search, status],
   );
-  const { data: getPostRes, ...getPostApiState } = useQuery({
-    queryKey: QUERY_KEYS.POST.GET_POSTS(queryArgs),
-    queryFn: () => getPost(queryArgs),
-    retry: false,
-  });
+  const {posts: getPostData, meta, ...getPostApiState} = useGetPosts(queryArgs);
 
-  const getPostData = getPostRes?.data || [];
 
   const handleRowSelection = (selectedRows: TPost[]) => {
     console.log("Selected posts:", selectedRows);
@@ -119,7 +143,7 @@ function PostViewTable() {
         enableRowSelection={true}
         onRowSelectionChange={handleRowSelection}
       />
-      <DynamicPagination meta={getPostRes?.meta} />
+      <DynamicPagination meta={meta} />
     </RenderData>
   );
 }

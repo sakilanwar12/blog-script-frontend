@@ -1,3 +1,5 @@
+import { Row } from "@tanstack/react-table";
+
 export type TNullish = null | undefined;
 export type TString = string | TNullish;
 export type TNumber = number | TNullish;
@@ -30,3 +32,9 @@ type ValidatorFn<T> = (value: T) => string | null
 export type FormValidators<T> = {
   [K in keyof T]?: ValidatorFn<T[K]>
 }
+
+// react table
+
+export type ActionCellProps<TData> = {
+  row: Row<TData>;
+};
