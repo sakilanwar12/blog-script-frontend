@@ -5,7 +5,7 @@ const QUERY_KEYS = {
     ME: ["me"],
   },
   POST:{
-    GET_POSTS: (args?: TPostArgs) => ["posts", args] as const,
+    GET_POSTS: (params?: TPostArgs) => ["posts", params],
     GET_POST: ["post"],
   }
 

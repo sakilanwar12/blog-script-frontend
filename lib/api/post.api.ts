@@ -1,5 +1,5 @@
 import { generateQueryString } from '../query-string';
-import { TApiResponse, TMeta, TString } from './common-api.types';
+import { TApiResponse, TString } from './common-api.types';
 import api from "@/lib/axios";
 
 
@@ -40,13 +40,22 @@ Create A Post End
 Get A Post Start
 =====================================================================
 */
+export type TPostAuthor = {
+    _id: TString;
+    name: TString;
+    email: TString;
+}
 
 export type TPost = ICreateAPostRes & {
     createdAt: TString;
     updatedAt: TString;
+    author: TPostAuthor;
 }
-export type TPostArgs = TMeta & {
-    search?: string; status?: string
+export type TPostArgs = {
+    page?: string;
+    limit?: string;
+    search?: string;
+    status?: string
 };
 async function getPost(args?: TPostArgs): Promise<TApiResponse<TPost[]>> {
     const queryString = generateQueryString(args);

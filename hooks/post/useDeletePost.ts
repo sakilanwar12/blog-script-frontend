@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
 import { deleteAPost } from "@/lib/api/post.api";
-import QUERY_KEYS from "@/lib/api/query-keys";
 
 export const useDeleteAPost = (options?: {
     onSuccess?: () => void;
@@ -19,8 +18,9 @@ export const useDeleteAPost = (options?: {
             });
 
             queryClient.invalidateQueries({
-                queryKey: QUERY_KEYS.POST.GET_POSTS(),
+                queryKey: ["posts"],
             });
+
             options?.onSuccess?.();
         },
 

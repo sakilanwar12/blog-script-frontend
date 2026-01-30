@@ -1,8 +1,7 @@
 import { Table, Text } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
-  useReactTable,
   getCoreRowModel,
   getSortedRowModel,
   getFilteredRowModel,
@@ -13,6 +12,7 @@ import {
   ColumnFiltersState,
   VisibilityState,
   RowSelectionState,
+  useReactTable,
 } from "@tanstack/react-table";
 
 interface DefaultTableProps<TData> {
@@ -25,7 +25,7 @@ interface DefaultTableProps<TData> {
   onRowSelectionChange?: (selectedRows: TData[]) => void;
 }
 
-export function DefaultTable<TData>({
+function DefaultTable<TData>({
   data,
   columns,
   enableSorting = true,
@@ -38,7 +38,7 @@ export function DefaultTable<TData>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,
@@ -51,18 +51,7 @@ export function DefaultTable<TData>({
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: (updater) => {
-      setRowSelection(updater);
-      if (onRowSelectionChange) {
-        const newSelection =
-          typeof updater === "function" ? updater(rowSelection) : updater;
-        const selectedRows = table
-          .getRowModel()
-          .rows.filter((row) => newSelection[row.id])
-          .map((row) => row.original);
-        onRowSelectionChange(selectedRows);
-      }
-    },
+    onRowSelectionChange: setRowSelection,
     state: {
       sorting,
       columnFilters,
@@ -72,26 +61,40 @@ export function DefaultTable<TData>({
     enableRowSelection,
   });
 
+  // Sync row selection to parent callback
+  useEffect(() => {
+    if (onRowSelectionChange) {
+      const selectedRows = table
+        .getSelectedRowModel()
+        .rows.map((row) => row.original);
+      onRowSelectionChange(selectedRows);
+    }
+  }, [rowSelection, onRowSelectionChange, table]);
+
   return (
     <Table>
       <Table.Thead>
         {table.getHeaderGroups().map((headerGroup) => (
           <Table.Tr key={headerGroup.id}>
-            {headerGroup.headers.map((header) => (
-              <Table.Th
-                key={header.id}
-                style={{
-                  width: header.getSize(),
-                  cursor: header.column.getCanSort() ? "pointer" : "default",
-                }}
-                onClick={header.column.getToggleSortingHandler()}
-              >
-                {flexRender(
-                  header.column.columnDef.header,
-                  header.getContext(),
-                )}
-              </Table.Th>
-            ))}
+            {headerGroup.headers.map((header, idx) => {
+              const isLast = idx === headerGroup.headers.length - 1;
+              return (
+                <Table.Th
+                  key={header.id}
+                  style={{
+                    width: header.getSize(),
+                    cursor: header.column.getCanSort() ? "pointer" : "default",
+                    textAlign: isLast ? "right" : "left",
+                  }}
+                  onClick={header.column.getToggleSortingHandler()}
+                >
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext(),
+                  )}
+                </Table.Th>
+              );
+            })}
           </Table.Tr>
         ))}
       </Table.Thead>
@@ -108,8 +111,13 @@ export function DefaultTable<TData>({
         ) : (
           table.getRowModel().rows.map((row) => (
             <Table.Tr key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <Table.Td key={cell.id}>
+              {row.getVisibleCells().map((cell, idx, arr) => (
+                <Table.Td
+                  key={cell.id}
+                  style={{
+                    textAlign: idx === arr.length - 1 ? "right" : "left",
+                  }}
+                >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </Table.Td>
               ))}
@@ -120,3 +128,4 @@ export function DefaultTable<TData>({
     </Table>
   );
 }
+export default DefaultTable;
