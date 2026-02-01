@@ -6,114 +6,124 @@ import { useRouter, useSearchParams } from "next/navigation";
 type ParamValue = string | number | boolean | null | undefined;
 
 type UpdateOptions = {
-    replace?: boolean;
-    debounceMs?: number;
-    scroll?: boolean;
+  replace?: boolean;
+  debounceMs?: number;
+  scroll?: boolean;
 };
 
 type ParamsRecord = Record<string, ParamValue>;
 
 const useManageSearchParams = <T extends ParamsRecord = ParamsRecord>() => {
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Cleanup debounce timer on unmount
-    useEffect(() => {
-        return () => {
-            if (debounceTimerRef.current) {
-                clearTimeout(debounceTimerRef.current);
-            }
-        };
-    }, []);
+  // Cleanup debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
 
-    // Get single param or all params
-    function getParams(): Partial<T>;
-    function getParams<K extends keyof T>(key: K): string | null;
-    function getParams<K extends keyof T>(key?: K): Partial<T> | string | null {
-        if (key !== undefined) {
-            return searchParams.get(String(key));
-        }
-
-        const allParams: Record<string, string> = {};
-        searchParams.forEach((value, key) => {
-            allParams[key] = value;
-        });
-
-        return allParams as Partial<T>;
+  // Get single param or all params
+  function getParams(): Partial<T>;
+  function getParams<K extends keyof T>(key: K): string | null;
+  function getParams<K extends keyof T>(key?: K): Partial<T> | string | null {
+    if (key !== undefined) {
+      return searchParams.get(String(key));
     }
 
-    // Update params with debounce support
-    const updateParams = useCallback(
-        (params: Partial<T>, options: UpdateOptions = {}) => {
-            const applyUpdate = () => {
-                const currentParams = new URLSearchParams(searchParams.toString());
+    const allParams: Record<string, string> = {};
+    searchParams.forEach((value, key) => {
+      allParams[key] = value;
+    });
 
-                Object.entries(params).forEach(([key, value]) => {
-                    if (value === null || value === undefined || value === "") {
-                        currentParams.delete(key);
-                    } else {
-                        currentParams.set(key, String(value));
-                    }
-                });
+    return allParams as Partial<T>;
+  }
 
-                const queryString = currentParams.toString();
-                const url = queryString ? `?${queryString}` : window.location.pathname;
+  // Update params with debounce support
+  const updateParams = useCallback(
+    (params: Partial<T>, options: UpdateOptions = {}) => {
+      const applyUpdate = () => {
+        const currentParams = new URLSearchParams(searchParams.toString());
 
-                const navigationOptions = {
-                    scroll: options.scroll ?? false,
-                };
+        Object.entries(params).forEach(([key, value]) => {
+          if (value === null || value === undefined || value === "") {
+            currentParams.delete(key);
+          } else {
+            currentParams.set(key, String(value));
+          }
+        });
 
-                if (options.replace) {
-                    router.replace(url, navigationOptions);
-                } else {
-                    router.push(url, navigationOptions);
-                }
-            };
+        const queryString = currentParams.toString();
+        const url = queryString ? `?${queryString}` : window.location.pathname;
 
-            // Clear existing debounce timer
-            if (debounceTimerRef.current) {
-                clearTimeout(debounceTimerRef.current);
-            }
+        const navigationOptions = {
+          scroll: options.scroll ?? false,
+        };
 
-            // Apply debounce if specified
-            if (options.debounceMs && options.debounceMs > 0) {
-                debounceTimerRef.current = setTimeout(applyUpdate, options.debounceMs);
-            } else {
-                applyUpdate();
-            }
-        },
-        [router, searchParams]
-    );
+        if (options.replace) {
+          router.replace(url, navigationOptions);
+        } else {
+          router.push(url, navigationOptions);
+        }
+      };
 
-    // Delete specific params
-    const deleteParams = useCallback(
-        (keys: Array<keyof T>) => {
-            const currentParams = new URLSearchParams(searchParams.toString());
+      // Clear existing debounce timer
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
 
-            keys.forEach((key) => {
-                currentParams.delete(String(key));
-            });
+      // Apply debounce if specified
+      if (options.debounceMs && options.debounceMs > 0) {
+        debounceTimerRef.current = setTimeout(applyUpdate, options.debounceMs);
+      } else {
+        applyUpdate();
+      }
+    },
+    [router, searchParams],
+  );
 
-            const queryString = currentParams.toString();
-            const url = queryString ? `?${queryString}` : window.location.pathname;
+  // Delete specific params
+  const deleteParams = useCallback(
+    (keys: Array<keyof T>) => {
+      const currentParams = new URLSearchParams(searchParams.toString());
 
-            router.replace(url, { scroll: false });
-        },
-        [router, searchParams]
-    );
+      keys.forEach((key) => {
+        currentParams.delete(String(key));
+      });
 
-    // Clear all params
-    const clearParams = useCallback(() => {
-        router.replace(window.location.pathname, { scroll: false });
-    }, [router]);
+      const queryString = currentParams.toString();
+      const url = queryString ? `?${queryString}` : window.location.pathname;
 
-    return {
-        getParams,
-        updateParams,
-        deleteParams,
-        clearParams,
-    };
+      router.replace(url, { scroll: false });
+    },
+    [router, searchParams],
+  );
+
+  // Clear all params
+  const clearParams = useCallback(() => {
+    router.replace(window.location.pathname, { scroll: false });
+  }, [router]);
+
+  // Get all params as object
+  const getAllParams = useCallback((): Partial<T> => {
+    const allParams: Record<string, string> = {};
+    searchParams.forEach((value, key) => {
+      allParams[key] = value;
+    });
+    return allParams as Partial<T>;
+  }, [searchParams]);
+
+  return {
+    getParams,
+    getAllParams,
+    updateParams,
+    deleteParams,
+    clearParams,
+  };
 };
 
 export default useManageSearchParams;

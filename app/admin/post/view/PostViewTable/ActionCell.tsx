@@ -6,7 +6,9 @@ import { useState } from "react";
 import { ActionCellProps } from "@/lib/api/common-api.types";
 import DeleteConfirmationDialog from "@/components/DeleteConfirmationModal";
 import { useDeleteAPost } from "@/hooks/post/useDeletePost";
+import { useRouter } from "next/navigation";
 function ActionCell({ row }: ActionCellProps<TPost>) {
+  const router = useRouter();
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
@@ -29,7 +31,7 @@ function ActionCell({ row }: ActionCellProps<TPost>) {
         variant="transparent"
         size="sm"
         className="mr-3"
-        onClick={() => console.log("Edit", row.original._id)}
+        onClick={() => router.push(`/admin/post/create?slug=${row.original?.slug}`)}
       >
         <SquarePen className="size-6" />
       </ActionIcon>

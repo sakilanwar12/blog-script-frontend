@@ -2,37 +2,16 @@
 
 import { Button, Textarea, TextInput } from "@mantine/core";
 import TiptapEditor from "@/components/TipTapEditor";
-import { useState } from "react";
-import { useForm } from "@mantine/form";
-import { initialCreatePostValues } from "./initialFormValues";
-import { createPostValidators } from "./validator";
-import { TCreateAPostArgs } from "@/lib/api/post.api";
-import { useCreateAPost } from "@/hooks/post/useCreateAPost";
+import { useCreateForm } from "./useCreateForm";
 
 function CreateAPostForm() {
-   const [content, setContent] = useState("");
-
-      const { getInputProps, onSubmit } = useForm<TCreateAPostArgs>({
-          initialValues: initialCreatePostValues,
-          validate: createPostValidators
-      })
-  
-      const { mutate, isPending } = useCreateAPost();
-  
-      const handleSubmit = (values: TCreateAPostArgs) => {
-          mutate({
-              title: values?.title,
-              status: values?.status,
-              excerpt: values?.excerpt,
-              content
-          })
-      }
+  const { formProps, handleSubmit, isPending, postContent } = useCreateForm();
 
   return (
-    <form className="space-y-4" onSubmit={onSubmit(handleSubmit)}>
-      <TextInput label="Title" {...getInputProps("title")} />
-      <Textarea label="Excerpt" {...getInputProps("excerpt")} />
-      <TiptapEditor onChange={setContent} />
+    <form className="space-y-4" onSubmit={formProps.onSubmit(handleSubmit)}>
+      <TextInput label="Title" {...formProps.getInputProps("title")} />
+      <Textarea label="Excerpt" {...formProps.getInputProps("excerpt")} />
+      <TiptapEditor onChange={postContent.setContent} />
       <Button type="submit" disabled={isPending}>
         Save Post
       </Button>
