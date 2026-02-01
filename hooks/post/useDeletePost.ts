@@ -8,7 +8,7 @@ export const useDeleteAPost = (options?: {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (id: string) => deleteAPost({ id }),
+        mutationFn: (ids: string[]) => deleteAPost({ ids }),
 
         onSuccess: () => {
             notifications.show({

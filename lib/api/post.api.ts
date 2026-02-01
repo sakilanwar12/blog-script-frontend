@@ -84,11 +84,11 @@ Delete A Post Start
 */
 
 export type TDeleteAPostArg = {
-    id: string
+    ids: string[]
 }
-async function deleteAPost({ id }: TDeleteAPostArg): Promise<TApiResponse<TPost>> {
+async function deleteAPost({ ids }: TDeleteAPostArg): Promise<TApiResponse<TPost>> {
 
-    const { data } = await api.delete(`/api/v1/blog/${id}`);
+    const { data } = await api.delete(`/api/v1/blog`, { data: { ids } });
     return data;
 }
 

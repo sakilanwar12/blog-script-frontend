@@ -6,10 +6,12 @@ import useManageSearchParams from "@/hooks/useManageSearchParams";
 import { TPost, TPostArgs } from "@/lib/api/post.api";
 import { useGetPosts } from "@/hooks/post/useGetPosts";
 import columns from "./column";
+import BulkActions from "./BulkActions";
+import { useState } from "react";
 
 function PostViewTable() {
   const { getAllParams } = useManageSearchParams<TPostArgs>();
-
+  const [selectedId,setSelectedId] = useState<string[]>([])
   const queryObject = getAllParams();
 
   const {
@@ -19,7 +21,7 @@ function PostViewTable() {
   } = useGetPosts({ ...queryObject });
 
   const handleRowSelection = (selectedRows: TPost[]) => {
-    console.log("Selected posts:", selectedRows);
+    setSelectedId(selectedRows.map((row) => row._id));
   };
 
   return (
@@ -32,7 +34,11 @@ function PostViewTable() {
         enableRowSelection={true}
         onRowSelectionChange={handleRowSelection}
       />
-      {meta && <DynamicPagination meta={meta} />}
+      <div className="flex justify-between items-center py-4">
+        <BulkActions selectedId={selectedId} />
+        {meta && <DynamicPagination meta={meta} />}
+        <div></div>
+      </div>
     </RenderData>
   );
 }

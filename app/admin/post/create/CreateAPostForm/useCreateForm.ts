@@ -26,7 +26,7 @@ export const useCreateForm = () => {
         content: post?.content || "",
       });
     }
-  }, [slug, post, getAPostApiState.isPending]);
+  }, [slug, post, getAPostApiState.isPending, formProps]);
 
   const { mutate, isPending } = useCreateAPost();
   const { mutate: updateAPostMutate, isPending: isLoading } = useUpdateAPost();

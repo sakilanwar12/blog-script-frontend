@@ -5,7 +5,6 @@ import {
   Group,
   Stack,
   ThemeIcon,
-  Box,
 } from "@mantine/core";
 import { AlertTriangle } from "lucide-react";
 
@@ -14,20 +13,20 @@ interface IDeleteConfirmationDialogProps {
   onClose: () => void;
   onConfirm: () => void;
   loading?: boolean;
-  title?: string;
   message?: string;
   confirmText?: string;
   cancelText?: string;
+  title?: string;
 }
 export default function DeleteConfirmationDialog({
   opened,
   onClose,
   onConfirm,
   loading = false,
-  title = "Confirm Deletion",
-  message = "You are about to permanently delete this item. This action cannot be undone and all associated data will be lost forever.",
-  confirmText = "Delete Forever",
+  message = "If you delete this item, it will be permanently deleted and cannot be recovered.",
+  confirmText = "Delete",
   cancelText = "Cancel",
+  title = "Are you sure you want to delete this item?",
 }: IDeleteConfirmationDialogProps) {
   return (
     <>
@@ -48,9 +47,6 @@ export default function DeleteConfirmationDialog({
             >
               <AlertTriangle size={22} color="#ef4444" />
             </ThemeIcon>
-            <Text size="xl" className="title-text">
-              {title}
-            </Text>
           </Group>
         }
         centered
@@ -61,27 +57,15 @@ export default function DeleteConfirmationDialog({
           blur: 8,
         }}
       >
-        <Stack gap="xl">
+        <Stack gap="sm">
+          <Text size="lg" className="warning-text">
+            {title}
+          </Text>
           <Text size="md" className="warning-text">
             {message}
           </Text>
 
-          <Box
-            p="md"
-            style={{
-              background: "rgba(0, 0, 0, 0.3)",
-              border: "1px solid rgba(239, 68, 68, 0.2)",
-              borderRadius: "8px",
-            }}
-          >
-            <Text size="sm" className="warning-text mono">
-              <span className="code-text">DELETE_PERMANENT</span>
-              {" • "}
-              No recovery option available
-            </Text>
-          </Box>
-
-          <Group justify="flex-end" gap="md" mt="md">
+          <Group grow   gap="md" mt="md">
             <Button
               variant="default"
               onClick={onClose}
@@ -96,6 +80,7 @@ export default function DeleteConfirmationDialog({
               onClick={onConfirm}
               loading={loading}
               size="md"
+              color="#ef4444"
             >
               {loading ? "Deleting..." : confirmText}
             </Button>

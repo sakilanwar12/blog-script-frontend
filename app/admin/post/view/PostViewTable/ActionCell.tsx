@@ -23,7 +23,7 @@ function ActionCell({ row }: ActionCellProps<TPost>) {
     if (!isConfirmed || !selectedId) {
       return;
     }
-    deletePostMutation.mutate(selectedId!);
+    deletePostMutation.mutate([selectedId]);
   };
   return (
     <div>
@@ -49,6 +49,11 @@ function ActionCell({ row }: ActionCellProps<TPost>) {
         opened={isConfirmed}
         onClose={() => setIsConfirmed(false)}
         onConfirm={handleDelete}
+        title="Are you sure you want to delete this post?"
+        message="If you delete this post, it will be permanently deleted and cannot be recovered."
+        confirmText="Delete"
+        cancelText="Cancel"
+        loading={deletePostMutation.isPending}
       />
     </div>
   );
