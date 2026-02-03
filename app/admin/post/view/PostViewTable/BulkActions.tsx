@@ -1,11 +1,14 @@
 import { useDeleteAPost } from "@/hooks/post/useDeletePost";
 import { Button, Select } from "@mantine/core";
 import { useState } from "react";
-
+import { notifications } from "@mantine/notifications";
 interface BulkActionsProps {
   selectedId: string[];
 }
-
+const actionData = [
+  { value: "trash", label: "Move to Trash" },
+  { value: "edit", label: "Edit" },
+];
 function BulkActions({ selectedId }: BulkActionsProps) {
   const [value, setValue] = useState<string | null>(null);
 
@@ -16,22 +19,28 @@ function BulkActions({ selectedId }: BulkActionsProps) {
     if (!value || selectedId.length === 0) return;
 
     switch (value) {
-      case "delete":
-        deletePostMutation.mutate(selectedId, {
-          onSuccess: () => {
-            console.log("Posts deleted successfully");
-            setValue(null); // reset dropdown
-          },
-          onError: (err) => {
-            console.error("Error deleting posts:", err);
-          },
-        });
+      case "edit":
+        console.log("edit");
         break;
 
       case "trash":
-        // If you have a separate trash API call, use it here
-        console.log("Move to trash:", selectedId);
-        // Example: trashPostMutation.mutate(selectedId)
+        deletePostMutation.mutate(selectedId, {
+          onSuccess: () => {
+            notifications.show({
+              title: "Success",
+              message: "Posts moved to trash successfully",
+              color: "green",
+            });
+            setValue(null);
+          },
+          onError: (err) => {
+            notifications.show({
+              title: "Error",
+              message: err.message || "Error moving posts to trash",
+              color: "red",
+            });
+          },
+        });
         setValue(null);
         break;
 
@@ -47,16 +56,13 @@ function BulkActions({ selectedId }: BulkActionsProps) {
         placeholder="Select an action"
         value={value}
         onChange={setValue}
-        className="w-36"
-        data={[
-          { value: "trash", label: "Trash" },
-          { value: "delete", label: "Delete" },
-        ]}
+        className="w-40"
+        data={actionData}
       />
       <Button
         onClick={handleApply}
         disabled={selectedId.length === 0 || !value}
-        loading={deletePostMutation.isPending} 
+        loading={deletePostMutation.isPending}
       >
         Apply
       </Button>
@@ -65,29 +71,3 @@ function BulkActions({ selectedId }: BulkActionsProps) {
 }
 
 export default BulkActions;
-
-
-// import { Button, Select } from "@mantine/core";
-// import { useState } from "react";
-// function BulkActions({ selectedId }: { selectedId: string[] }) {
-//   const [value, setValue] = useState<string | null>(null);
-
-//   return (
-//     <div className="flex items-center gap-2">
-//       <Select
-//         label=""
-//         placeholder="Select an action"
-//         value={value}
-//         onChange={setValue}
-//         className="w-36"
-//         data={[
-//           { value: "trash", label: "Trash" },
-//           { value: "delete", label: "Delete" },
-//         ]}
-//       />
-//       <Button>Apply</Button>
-//     </div>
-//   );
-// }
-
-// export default BulkActions;

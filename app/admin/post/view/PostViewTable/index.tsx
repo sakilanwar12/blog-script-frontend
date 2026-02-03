@@ -7,11 +7,12 @@ import { TPost, TPostArgs } from "@/lib/api/post.api";
 import { useGetPosts } from "@/hooks/post/useGetPosts";
 import columns from "./column";
 import BulkActions from "./BulkActions";
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import PostFilterButtons from "./PostFilterButtons";
 
 function PostViewTable() {
   const { getAllParams } = useManageSearchParams<TPostArgs>();
-  const [selectedId,setSelectedId] = useState<string[]>([])
+  const [selectedId, setSelectedId] = useState<string[]>([]);
   const queryObject = getAllParams();
 
   const {
@@ -20,26 +21,29 @@ function PostViewTable() {
     ...getPostApiState
   } = useGetPosts({ ...queryObject });
 
-  const handleRowSelection = (selectedRows: TPost[]) => {
+  const handleRowSelection = useCallback((selectedRows: TPost[]) => {
     setSelectedId(selectedRows.map((row) => row._id));
-  };
+  }, []);
 
   return (
-    <RenderData {...getPostApiState}>
-      <DefaultTable
-        data={getPostData}
-        columns={columns}
-        enableSorting={true}
-        enablePagination={true}
-        enableRowSelection={true}
-        onRowSelectionChange={handleRowSelection}
-      />
-      <div className="flex justify-between items-center py-4">
-        <BulkActions selectedId={selectedId} />
-        {meta && <DynamicPagination meta={meta} />}
-        <div></div>
-      </div>
-    </RenderData>
+    <div className="space-y-4">
+      <PostFilterButtons />
+      <RenderData {...getPostApiState}>
+        <DefaultTable
+          data={getPostData}
+          columns={columns}
+          enableSorting={true}
+          enablePagination={true}
+          enableRowSelection={true}
+          onRowSelectionChange={handleRowSelection}
+        />
+        <div className="flex justify-between items-center py-4">
+          <BulkActions selectedId={selectedId} />
+          {meta && <DynamicPagination meta={meta} />}
+          <div></div>
+        </div>
+      </RenderData>
+    </div>
   );
 }
 

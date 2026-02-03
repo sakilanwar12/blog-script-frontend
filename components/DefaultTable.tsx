@@ -38,7 +38,6 @@ function DefaultTable<TData>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,
@@ -69,7 +68,8 @@ function DefaultTable<TData>({
         .rows.map((row) => row.original);
       onRowSelectionChange(selectedRows);
     }
-  }, [rowSelection, onRowSelectionChange, table]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rowSelection]);
 
   return (
     <Table>
