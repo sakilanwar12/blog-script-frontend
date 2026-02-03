@@ -1,117 +1,97 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { Container, Group, ActionIcon, Anchor, Burger } from "@mantine/core";
 import {
-  Container,
-  Group,
-  Burger,
-  TextInput,
-  ActionIcon,
-  Button,
-  Anchor,
-} from "@mantine/core";
-import { Search, X } from "lucide-react";
+  Facebook,
+  Twitter,
+  Instagram,
+  Linkedin,
+  Menu as MenuIcon,
+  Search,
+} from "lucide-react";
+import { useState } from "react";
 
 const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/blogs", label: "Blogs" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
+  { href: "/", label: "HOME" },
+  { href: "/lifestyle", label: "LIFESTYLE" },
+  { href: "/fashion", label: "FASHION" },
+  { href: "/technology", label: "TECHNOLOGY" },
+  { href: "/health", label: "HEALTH" },
+  { href: "/travel", label: "TRAVEL" },
+];
+
+const socialLinks = [
+  { href: "https://facebook.com", icon: Facebook, label: "Facebook" },
+  { href: "https://twitter.com", icon: Twitter, label: "Twitter" },
+  { href: "https://instagram.com", icon: Instagram, label: "Instagram" },
+  { href: "https://linkedin.com", icon: Linkedin, label: "LinkedIn" },
 ];
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200">
+    <header className="bg-white border-b border-gray-200">
       <Container size="xl">
-        <div className="flex items-center justify-between h-16">
+        {/* Top Bar with Social Icons */}
+        <div className="flex items-center justify-between py-3 border-b border-gray-100">
+          <Group gap="xs" visibleFrom="sm">
+            {socialLinks.map((social) => (
+              <ActionIcon
+                key={social.label}
+                component="a"
+                href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="subtle"
+                size="sm"
+                color="gray"
+                aria-label={social.label}
+              >
+                <social.icon size={16} />
+              </ActionIcon>
+            ))}
+          </Group>
+
           {/* Logo */}
           <Link
             href="/"
-            className="text-xl font-bold bg-gradient-to-r from-blue-500 to-blue-700 bg-clip-text text-transparent hover:from-blue-600 hover:to-blue-800 transition-all"
+            className="text-3xl font-bold text-gray-900 tracking-tight"
           >
-            TechBlog
+            Callie
           </Link>
 
-          {/* Desktop Navigation */}
-          <Group gap="xl" visibleFrom="md">
-            {navLinks.map((link) => (
-              <Anchor
-                key={link.href}
-                component={Link}
-                href={link.href}
-                c="dimmed"
-                fw={500}
-                underline="never"
-                className="relative hover:text-blue-500 transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-blue-500 after:transition-all hover:after:w-full"
-              >
-                {link.label}
-              </Anchor>
-            ))}
-          </Group>
-
-          {/* Right Side Actions */}
-          <Group gap="md">
-            {/* Search */}
-            <ActionIcon
-              variant="subtle"
-              size="lg"
-              onClick={() => setSearchOpen(!searchOpen)}
-              aria-label="Search"
-              className="hover:bg-gray-100"
-            >
-              {searchOpen ? <X size={20} /> : <Search size={20} />}
+          {/* Right Icons */}
+          <Group gap="xs">
+            <ActionIcon variant="subtle" size="lg" color="gray">
+              <MenuIcon size={20} />
             </ActionIcon>
-
-            {/* CTA Button */}
-            <Button component={Link} href="/subscribe" visibleFrom="md">
-              Subscribe
-            </Button>
-
-            {/* Mobile Menu Toggle */}
-            <Burger
-              opened={mobileMenuOpen}
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              hiddenFrom="md"
-              size="sm"
-            />
+            <ActionIcon variant="subtle" size="lg" color="gray">
+              <Search size={20} />
+            </ActionIcon>
           </Group>
         </div>
 
-        {/* Search Bar */}
-        {searchOpen && (
-          <div className="py-4 animate-in fade-in slide-in-from-top-2">
-            <TextInput
-              placeholder="Search articles..."
-              leftSection={<Search size={16} />}
-              size="md"
-              autoFocus
-            />
-          </div>
-        )}
-
-        {/* Mobile Navigation */}
-        {mobileMenuOpen && (
-          <nav className="flex flex-col gap-2 py-4 border-t border-gray-200 animate-in fade-in slide-in-from-top-2">
+        {/* Navigation */}
+        <nav className="hidden md:flex items-center justify-center py-4">
+          <Group gap="xl">
             {navLinks.map((link) => (
               <Anchor
                 key={link.href}
                 component={Link}
                 href={link.href}
-                c="dimmed"
+                c="dark"
                 fw={500}
+                size="sm"
                 underline="never"
-                className="p-4 rounded-lg hover:bg-gray-100 hover:text-blue-500 transition-all"
-                onClick={() => setMobileMenuOpen(false)}
+                className="hover:text-red-500 transition-colors tracking-wide"
               >
                 {link.label}
               </Anchor>
             ))}
-          </nav>
-        )}
+          </Group>
+        </nav>
       </Container>
     </header>
   );
