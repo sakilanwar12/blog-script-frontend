@@ -1,7 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { Container, Group, ActionIcon, Anchor, Burger } from "@mantine/core";
+import {
+  Container,
+  Group,
+  ActionIcon,
+  Anchor,
+  Drawer,
+  Stack,
+  Collapse,
+} from "@mantine/core";
 import {
   Facebook,
   Twitter,
@@ -9,6 +17,8 @@ import {
   Linkedin,
   Menu as MenuIcon,
   Search,
+  X,
+  ChevronDown,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -21,6 +31,14 @@ const navLinks = [
   { href: "/travel", label: "TRAVEL" },
 ];
 
+const categories = [
+  { href: "/lifestyle", label: "Lifestyle" },
+  { href: "/fashion", label: "Fashion" },
+  { href: "/technology", label: "Technology" },
+  { href: "/travel", label: "Travel" },
+  { href: "/health", label: "Health" },
+];
+
 const socialLinks = [
   { href: "https://facebook.com", icon: Facebook, label: "Facebook" },
   { href: "https://twitter.com", icon: Twitter, label: "Twitter" },
@@ -29,70 +47,174 @@ const socialLinks = [
 ];
 
 export default function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
 
   return (
-    <header className="bg-white border-b border-gray-200">
-      <Container size="xl">
-        {/* Top Bar with Social Icons */}
-        <div className="flex items-center justify-between py-3 border-b border-gray-100">
-          <Group gap="xs" visibleFrom="sm">
-            {socialLinks.map((social) => (
+    <>
+      <header className="bg-white border-b border-gray-200">
+        <Container size="xl">
+          {/* Top Bar with Social Icons */}
+          <div className="flex items-center justify-between py-3 border-b border-gray-100">
+            <Group gap="xs" visibleFrom="sm">
+              {socialLinks.map((social) => (
+                <ActionIcon
+                  key={social.label}
+                  component="a"
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variant="subtle"
+                  size="sm"
+                  color="gray"
+                  aria-label={social.label}
+                >
+                  <social.icon size={16} />
+                </ActionIcon>
+              ))}
+            </Group>
+
+            {/* Logo */}
+            <Link
+              href="/"
+              className="text-3xl font-bold text-gray-900 tracking-tight"
+            >
+              Callie
+            </Link>
+
+            {/* Right Icons */}
+            <Group gap="xs">
               <ActionIcon
-                key={social.label}
-                component="a"
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
                 variant="subtle"
-                size="sm"
+                size="lg"
                 color="gray"
-                aria-label={social.label}
+                onClick={() => setMenuOpen(true)}
               >
-                <social.icon size={16} />
+                <MenuIcon size={20} />
               </ActionIcon>
-            ))}
-          </Group>
+              <ActionIcon variant="subtle" size="lg" color="gray">
+                <Search size={20} />
+              </ActionIcon>
+            </Group>
+          </div>
 
-          {/* Logo */}
-          <Link
-            href="/"
-            className="text-3xl font-bold text-gray-900 tracking-tight"
-          >
-            Callie
-          </Link>
+          {/* Navigation */}
+          <nav className="hidden md:flex items-center justify-center py-4">
+            <Group gap="xl">
+              {navLinks.map((link) => (
+                <Anchor
+                  key={link.href}
+                  component={Link}
+                  href={link.href}
+                  c="dark"
+                  fw={500}
+                  size="sm"
+                  underline="never"
+                  className="hover:text-red-500 transition-colors tracking-wide"
+                >
+                  {link.label}
+                </Anchor>
+              ))}
+            </Group>
+          </nav>
+        </Container>
+      </header>
 
-          {/* Right Icons */}
-          <Group gap="xs">
-            <ActionIcon variant="subtle" size="lg" color="gray">
-              <MenuIcon size={20} />
+      {/* Sidebar Menu */}
+      <Drawer
+        opened={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        position="right"
+        size="sm"
+        padding={0}
+        classNames={{
+          content: "bg-gray-900",
+          header: "bg-gray-900 border-b border-gray-800",
+          close: "text-white hover:bg-gray-800",
+        }}
+      >
+        <div className="bg-gray-900 text-white min-h-full">
+          {/* Close button area */}
+          <div className="flex justify-end p-4 border-b border-gray-800">
+            <ActionIcon
+              variant="subtle"
+              color="gray"
+              size="lg"
+              onClick={() => setMenuOpen(false)}
+            >
+              <X size={24} className="text-white" />
             </ActionIcon>
-            <ActionIcon variant="subtle" size="lg" color="gray">
-              <Search size={20} />
-            </ActionIcon>
-          </Group>
-        </div>
+          </div>
 
-        {/* Navigation */}
-        <nav className="hidden md:flex items-center justify-center py-4">
-          <Group gap="xl">
-            {navLinks.map((link) => (
-              <Anchor
-                key={link.href}
-                component={Link}
-                href={link.href}
-                c="dark"
-                fw={500}
-                size="sm"
-                underline="never"
-                className="hover:text-red-500 transition-colors tracking-wide"
+          {/* Menu Items */}
+          <Stack gap={0} className="py-4">
+            {/* Home */}
+            <Link
+              href="/"
+              className="px-6 py-4 text-white hover:bg-gray-800 transition-colors border-b border-gray-800"
+              onClick={() => setMenuOpen(false)}
+            >
+              Home
+            </Link>
+
+            {/* Categories with Dropdown */}
+            <div className="border-b border-gray-800">
+              <button
+                onClick={() => setCategoriesOpen(!categoriesOpen)}
+                className="w-full px-6 py-4 text-white hover:bg-gray-800 transition-colors flex items-center justify-between"
               >
-                {link.label}
-              </Anchor>
-            ))}
-          </Group>
-        </nav>
-      </Container>
-    </header>
+                <span>Categories</span>
+                <ChevronDown
+                  size={20}
+                  className={`transition-transform ${categoriesOpen ? "rotate-180" : ""}`}
+                />
+              </button>
+
+              <Collapse in={categoriesOpen}>
+                <div className="bg-gray-800/50">
+                  {categories.map((category) => (
+                    <Link
+                      key={category.href}
+                      href={category.href}
+                      className="block px-10 py-3 text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      {category.label}
+                    </Link>
+                  ))}
+                </div>
+              </Collapse>
+            </div>
+
+            {/* About Us */}
+            <Link
+              href="/about"
+              className="px-6 py-4 text-white hover:bg-gray-800 transition-colors border-b border-gray-800"
+              onClick={() => setMenuOpen(false)}
+            >
+              About Us
+            </Link>
+
+            {/* Contacts */}
+            <Link
+              href="/contact"
+              className="px-6 py-4 text-white hover:bg-gray-800 transition-colors border-b border-gray-800"
+              onClick={() => setMenuOpen(false)}
+            >
+              Contacts
+            </Link>
+
+            {/* Advertise */}
+            <Link
+              href="/advertise"
+              className="px-6 py-4 text-white hover:bg-gray-800 transition-colors border-b border-gray-800"
+              onClick={() => setMenuOpen(false)}
+            >
+              Advertise
+            </Link>
+          </Stack>
+        </div>
+      </Drawer>
+    </>
   );
 }
