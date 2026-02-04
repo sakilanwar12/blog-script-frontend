@@ -79,7 +79,7 @@ export default function Header() {
               href="/"
               className="text-3xl font-bold text-gray-900 tracking-tight"
             >
-              Callie
+              Sakil
             </Link>
 
             {/* Right Icons */}
@@ -186,13 +186,13 @@ export default function Header() {
               </Collapse>
             </div>
 
-            {/* About Us */}
+            {/* About Me */}
             <Link
-              href="/about"
+              href="/about-me"
               className="px-6 py-4 text-white hover:bg-gray-800 transition-colors border-b border-gray-800"
               onClick={() => setMenuOpen(false)}
             >
-              About Us
+              About Me
             </Link>
 
             {/* Contacts */}

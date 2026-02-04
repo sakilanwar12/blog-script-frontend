@@ -35,7 +35,7 @@ const tags = [
 
 const footerLinks = [
   { href: "/", label: "Home" },
-  { href: "/about", label: "About Us" },
+  { href: "/about-me", label: "About Me" },
   { href: "/contact", label: "Contacts" },
   { href: "/advertise", label: "Advertise" },
   { href: "/privacy", label: "Privacy" },

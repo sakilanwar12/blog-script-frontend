@@ -119,21 +119,6 @@ export default function Home() {
       <main>
         <HeroSection />
 
-        {/* Featured Post Section */}
-        <section className="py-16">
-          <Container size="xl">
-            <div className="text-center mb-12">
-              <Title order={2} mb="xs">
-                Featured Article
-              </Title>
-              <Text c="dimmed" size="lg">
-                Our top pick for this week
-              </Text>
-            </div>
-            <FeaturedPost {...featuredPost} />
-          </Container>
-        </section>
-
         {/* Latest Posts Section */}
         <section className="py-16">
           <Container size="xl">
