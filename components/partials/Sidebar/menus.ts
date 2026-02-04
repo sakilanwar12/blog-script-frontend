@@ -1,4 +1,4 @@
-import { Home, FileText } from "lucide-react";
+import { Home, FileText, Settings2 } from "lucide-react";
 interface IMenuItem {
     icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
     label: string;
@@ -19,6 +19,21 @@ export const navItems: IMenuItem[] = [
             {
                 label: "Posts",
                 href: "/admin/post/view",
+            },
+        ],
+    },
+    {
+        icon: Settings2,
+        label: "Settings",
+        href: "/admin/settings",
+        children: [
+            {
+                label: "General",
+                href: "/admin/settings/general",
+            },
+            {
+                label: "Social",
+                href: "/admin/settings/social",
             },
         ],
     },
